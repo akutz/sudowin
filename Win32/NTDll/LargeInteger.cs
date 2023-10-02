@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-/*
-Copyright (c) 2005-2008 Schley Andrew Kutz <akutz@lostcreations.com>
+﻿/*
+Copyright (c) 2005-2023, Schley Andrew Kutz <sakutz@gmail.com>
 All rights reserved.
-
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
@@ -27,22 +24,55 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
--->
-<configuration>
-	<system.runtime.remoting>
-		<application>
-			<client>
-				<wellknown type="Sudowin.Common.ISudoServer, Sudowin.Common" url="ipc://sudowin/sudowinserver.rem"/>
-			</client>
-			<channels>
-				<channel type="System.Runtime.Remoting.Channels.Ipc.IpcClientChannel, System.Runtime.Remoting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" portName="sudowin" secure="True" useDefaultCredentials="True">
 
-					<serverProviders>
-						<formatter ref="binary"/>
-						<provider type="System.Runtime.Remoting.Channels.BinaryServerFormatterSinkProvider, System.Runtime.Remoting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
-					</serverProviders>
-				</channel>
-			</channels>
-		</application>
-	</system.runtime.remoting>
-<startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.8.1"/></startup></configuration>
+using System.Runtime.InteropServices;
+
+namespace Sudowin.Win32.NTDll
+{
+    /// <summary>
+    /// Represents a 64-bit signed integer value.
+    /// </summary>
+    /// <remarks>
+    /// LARGE_INTEGER, https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-large_integer-r1
+    /// </remarks>
+    [StructLayout(LayoutKind.Explicit, Size = 8)]
+    public struct LargeInteger
+    {
+        [FieldOffset(0)]
+        public uint Low;
+
+        [FieldOffset(4)]
+        public uint High;
+        
+        [FieldOffset(0)]
+        public long QuadPart;
+
+        public LargeInteger(uint low, uint high)
+        {
+            Low = low;
+            High = high;
+            QuadPart = 0L;
+        }
+
+        public LargeInteger(long quad)
+        {
+            Low = 0;
+            High = 0;
+            QuadPart = quad;
+        }
+
+        public long ToInt64()
+        {
+            return ((long)High << 32) | Low;
+        }
+
+        public static LargeInteger FromInt64(long value)
+        {
+            return new LargeInteger
+            {
+                Low = (uint)(value),
+                High = (uint)((value >> 32))
+            };
+        }
+    }
+}

@@ -90,7 +90,7 @@
     </Compile>
     <Compile Include="Service.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Win32.cs" />
+    <None Include="Win32.cs.disabled" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Plugins.Authentication\Plugins.Authentication.csproj">
@@ -112,6 +112,10 @@
     <ProjectReference Include="..\Plugins\Plugins.csproj">
       <Project>{E5CBBCD1-A264-427E-9A5D-261E1AA06F49}</Project>
       <Name>Plugins</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Win32\Win32.csproj">
+      <Project>{dc28008e-16b3-426c-a005-e244d4c69428}</Project>
+      <Name>Win32</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

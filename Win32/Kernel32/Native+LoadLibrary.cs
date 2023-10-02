@@ -1,9 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-/*
-Copyright (c) 2005-2008 Schley Andrew Kutz <akutz@lostcreations.com>
+﻿/*
+Copyright (c) 2005-2023, Schley Andrew Kutz <sakutz@gmail.com>
 All rights reserved.
-
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
@@ -27,22 +24,33 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
--->
-<configuration>
-	<system.runtime.remoting>
-		<application>
-			<client>
-				<wellknown type="Sudowin.Common.ISudoServer, Sudowin.Common" url="ipc://sudowin/sudowinserver.rem"/>
-			</client>
-			<channels>
-				<channel type="System.Runtime.Remoting.Channels.Ipc.IpcClientChannel, System.Runtime.Remoting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" portName="sudowin" secure="True" useDefaultCredentials="True">
 
-					<serverProviders>
-						<formatter ref="binary"/>
-						<provider type="System.Runtime.Remoting.Channels.BinaryServerFormatterSinkProvider, System.Runtime.Remoting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
-					</serverProviders>
-				</channel>
-			</channels>
-		</application>
-	</system.runtime.remoting>
-<startup><supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.8.1"/></startup></configuration>
+using System;
+using System.Runtime.InteropServices;
+using System.Security;
+
+namespace Sudowin.Win32.Kernel32
+{
+    public static partial class Native
+    {
+        /// <summary>
+        /// The
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-loadlibraryw">
+        /// LoadLibrary
+        /// </see>
+        /// function loads the specified module into the address space of the
+        /// calling process. The specified module may cause other modules to be
+        /// loaded.
+        /// </summary>
+        [DllImport(
+            "kernel32.dll",
+            EntryPoint = "LoadLibraryW",
+            CharSet = CharSet.Unicode,
+            SetLastError = true),
+            SuppressUnmanagedCodeSecurity
+        ]
+        public static extern IntPtr LoadLibrary(
+            [MarshalAs(UnmanagedType.LPWStr)] string libFileName
+        );
+    }
+}
